@@ -9660,16 +9660,19 @@ async function run() {
         for (const pullRequest of pullRequests) {
             core.info(`PR title: ${pullRequest.title}`);
             if (pullRequest.draft === true) {
+                core.info("This is a draft pull request, skipping.");
                 continue;
             }
             const currentTime = new Date().getTime();
             const deadlineTime = new Date(pullRequest.updated_at).getTime() +
                 convertHoursToMilliseconds(inactivityDeadlineHours);
             if (currentTime < deadlineTime) {
+                core.info("Deadline not reached, skipping.");
                 continue;
             }
             const reviewers = (_a = pullRequest.requested_reviewers) === null || _a === void 0 ? void 0 : _a.map(reviewer => `@${reviewer.login}`).join(", ");
             const reminderCommentMessage = `${reviewers} \n${reminderMessage}`;
+            core.info(`Message to write: ${reminderCommentMessage}`);
             await octokit.rest.issues.createComment({
                 ...github.context.repo,
                 issue_number: pullRequest.number,
