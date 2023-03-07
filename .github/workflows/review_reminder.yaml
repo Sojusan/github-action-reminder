@@ -1,0 +1,15 @@
+name: "reminder"
+on:
+  schedule:
+    - cron: "1-59 * * * *"
+
+jobs:
+  reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reminder_message: "This is a test reminder message. Good job!"
+          inactivity_deadline_hours: 1

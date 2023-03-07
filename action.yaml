@@ -1,0 +1,21 @@
+name: "Inactive PR reminder"
+description: "GitHub Action to send a reminder to the PR that is lacking in activity."
+author: "Rafał Grzegorczyk"
+inputs:
+  github_token:
+    required: true
+    description: "GitHub Token"
+  reminder_message:
+    required: false
+    default: "No activity in this PR. Please take some time and check it out. Don't make this PR sad ;-;"
+    description: "Message to be sent to the PR that is missing in activity."
+  inactivity_deadline_hours:
+    required: false
+    default: "48"  # by default the reminder will be sent after 2 days of inactivity
+    description: "This is the deadline for inactive PR (in hours). If this time is exceeded then a reminder will be sent."
+runs:
+  using: "node16"
+  main: "dist/index.js"
+branding:
+  icon: "bell"
+  color: "gray-dark"
