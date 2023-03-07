@@ -1,4 +1,4 @@
-# github-action-reminder
+# github-action-reminder TEST
 
 GitHub Action to send a reminder to the PR that is lacking in activity.
 
