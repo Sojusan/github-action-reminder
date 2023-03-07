@@ -20,6 +20,7 @@ async function run(): Promise<void> {
             core.info(`PR title: ${pullRequest.title}`);
 
             if (pullRequest.draft === true) {
+                core.info("This is a draft pull request, skipping.");
                 continue
             }
             const currentTime = new Date().getTime();
@@ -27,12 +28,14 @@ async function run(): Promise<void> {
                 convertHoursToMilliseconds(inactivityDeadlineHours);
 
             if (currentTime < deadlineTime) {
+                core.info("Deadline not reached, skipping.");
                 continue
             }
 
             const reviewers = pullRequest.requested_reviewers?.map(reviewer => `@${reviewer.login}`).join(", ");
             const reminderCommentMessage = `${reviewers} \n${reminderMessage}`
 
+            core.info(`Message to write: ${reminderCommentMessage}`)
             await octokit.rest.issues.createComment({
                 ...github.context.repo,
                 issue_number: pullRequest.number,
