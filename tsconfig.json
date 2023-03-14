@@ -1,12 +1,22 @@
 {
     "compilerOptions": {
-        "target": "ES2019",
-        "module": "CommonJS",
-        "outDir": "./lib",
-        "rootDir": "./src",
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "lib": ["ESNext"],
+        "allowJs": false,
+        "skipLibCheck": false,
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
         "strict": true,
-        "noImplicitAny": true,
-        "esModuleInterop": true
+        "forceConsistentCasingInFileNames": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "outDir": "./lib",
+        "noImplicitAny": false,
     },
-    "exclude": ["node_modules", "**/*.test.ts"]
+    "exclude": ["node_modules", "**/*.test.ts"],
+    "include": ["./src"]
 }

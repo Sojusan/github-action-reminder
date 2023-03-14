@@ -1,12 +1,15 @@
 {
   "name": "github-action-reminder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GitHub Action to send a reminder to the PR that is lacking in activity.",
   "main": "src/index.ts",
   "scripts": {
+    "build": "tsc",
     "lint": "eslint src/**/*.ts",
-    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "package": "ncc build --source-map --license licenses.txt",
+    "test": "jest",
+    "format": "prettier --write **/*.ts",
+    "all": "npm run lint && npm run build && npm run package && npm test"
   },
   "repository": {
     "type": "git",
@@ -28,10 +31,25 @@
     "@actions/github": "^5.1.1"
   },
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
+    "@jest/types": "^29.5.0",
+    "@types/jest": "^29.4.1",
+    "@types/node": "^18.15.2",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
     "@vercel/ncc": "^0.36.1",
     "eslint": "^8.35.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-github": "^4.6.1",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jest": "^27.2.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.5.0",
-    "typescript": "^4.9.5",
-    "eslint-plugin-github": "^4.6.1"
+    "prettier": "^2.8.4",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
 }
