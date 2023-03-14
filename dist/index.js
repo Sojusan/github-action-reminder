@@ -9612,84 +9612,6 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 6144:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-const github = __importStar(__nccwpck_require__(5438));
-function convertHoursToMilliseconds(hours) {
-    return 1000 * 60 * 60 * hours;
-}
-async function run() {
-    var _a;
-    try {
-        const githubToken = core.getInput("github_token");
-        const reminderMessage = core.getInput("reminder_message");
-        const inactivityDeadlineHours = parseInt(core.getInput("inactivity_deadline_hours"));
-        const octokit = github.getOctokit(githubToken);
-        const { data: pullRequests } = await octokit.rest.pulls.list({
-            ...github.context.repo,
-            state: "open"
-        });
-        for (const pullRequest of pullRequests) {
-            core.info(`PR title: ${pullRequest.title}`);
-            if (pullRequest.draft === true) {
-                core.info("This is a draft pull request, skipping.");
-                continue;
-            }
-            const currentTime = new Date().getTime();
-            const deadlineTime = new Date(pullRequest.updated_at).getTime() +
-                convertHoursToMilliseconds(inactivityDeadlineHours);
-            if (currentTime < deadlineTime) {
-                core.info("Deadline not reached, skipping.");
-                continue;
-            }
-            const reviewers = (_a = pullRequest.requested_reviewers) === null || _a === void 0 ? void 0 : _a.map(reviewer => `@${reviewer.login}`).join(", ");
-            const reminderCommentMessage = `${reviewers} \n${reminderMessage}`;
-            core.info(`Message to write: ${reminderCommentMessage}`);
-            await octokit.rest.issues.createComment({
-                ...github.context.repo,
-                issue_number: pullRequest.number,
-                body: reminderCommentMessage
-            });
-            core.info(`Reminder created for PR: ${pullRequest.number}`);
-        }
-    }
-    catch (error) {
-        core.setFailed(error.message);
-    }
-}
-run();
-
-
-/***/ }),
-
 /***/ 2877:
 /***/ ((module) => {
 
@@ -9859,18 +9781,105 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+// ESM COMPAT FLAG
+__nccwpck_require__.r(__webpack_exports__);
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+;// CONCATENATED MODULE: ./src/utils/helpers.ts
+function convertHoursToMilliseconds(hours) {
+    return 1000 * 60 * 60 * hours;
+}
+/* harmony default export */ const helpers = (convertHoursToMilliseconds);
+
+;// CONCATENATED MODULE: ./src/create-reminder-comment.ts
+
+
+
+const STATUS_CREATED = 201;
+async function createReminderComment() {
+    try {
+        const githubToken = core.getInput("github_token");
+        const reminderMessage = core.getInput("reminder_message");
+        const inactivityDeadlineHours = parseInt(core.getInput("inactivity_deadline_hours"), 10);
+        const octokit = github.getOctokit(githubToken);
+        const { data: pullRequests } = await octokit.rest.pulls.list({
+            ...github.context.repo,
+            state: "open",
+        });
+        if (pullRequests.length === 0) {
+            core.info("There are no pull requests, nothing to do.");
+            return;
+        }
+        for (const pullRequest of pullRequests) {
+            core.info(`PR title: ${pullRequest.title}`);
+            if (pullRequest.draft === true) {
+                core.info("This is a draft pull request, skipping.");
+                continue;
+            }
+            const currentTime = new Date().getTime();
+            const updated_at = new Date(pullRequest.updated_at).getTime();
+            const deadlineTime = updated_at + helpers(inactivityDeadlineHours);
+            if (currentTime < deadlineTime) {
+                core.info("Deadline not reached, skipping.");
+                continue;
+            }
+            const reviewers = pullRequest.requested_reviewers
+                ?.map((reviewer) => `@${reviewer.login}`)
+                .join(", ");
+            const reminderCommentMessage = `${reviewers} \n${reminderMessage}`;
+            core.info(`Message to write: ${reminderCommentMessage}`);
+            const response = await octokit.rest.issues.createComment({
+                ...github.context.repo,
+                issue_number: pullRequest.number,
+                body: reminderCommentMessage,
+            });
+            if (response.status === STATUS_CREATED) {
+                core.info(`Reminder created for PR: ${pullRequest.number}`);
+            }
+            else {
+                core.error(`Failed to create comment for PR: ${pullRequest.number} Response status: ${response.status}`);
+            }
+        }
+    }
+    catch (error) {
+        core.setFailed(error.message);
+    }
+}
+/* harmony default export */ const create_reminder_comment = (createReminderComment);
+
+;// CONCATENATED MODULE: ./src/index.ts
+
+async function run() {
+    create_reminder_comment();
+}
+run();
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
