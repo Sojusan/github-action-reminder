@@ -1,0 +1,58 @@
+{
+    "plugins": ["jest", "@typescript-eslint", "prettier"],
+    "extends": [
+      "plugin:@typescript-eslint/recommended",
+      "airbnb",
+      "plugin:react/recommended",
+      "plugin:prettier/recommended",
+      "plugin:github/recommended"
+    ],
+    "globals": {
+      "jest": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "settings": {
+      "import/resolver": {
+        "typescript": {}
+      }
+    },
+    "rules": {
+      "i18n-text/no-en": "off",
+      "eslint-comments/no-use": "off",
+      "import/no-namespace": "off",
+      "no-continue": "off",
+      "no-restricted-syntax": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ],
+      "no-use-before-define": "off",
+      "@typescript-eslint/no-use-before-define": ["error"],
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "ts": "never"
+        }
+      ],
+      "@typescript-eslint/no-explicit-any": "off",
+      "no-await-in-loop": "off",
+      "camelcase": "off",
+      "no-shadow": "off",
+      "@typescript-eslint/no-shadow": ["error"],
+      "no-unused-vars": "off",
+      "no-param-reassign": ["error", { "props": false }],
+      "no-undef": "off"
+    },
+    "env": {
+      "node": true,
+      "es2021": true,
+      "jest": true
+    }
+}
