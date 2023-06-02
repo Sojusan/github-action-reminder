@@ -9824,6 +9824,7 @@ async function createReminderComment() {
         const githubToken = core.getInput("github_token");
         const reminderMessage = core.getInput("reminder_message");
         const inactivityDeadlineHours = parseInt(core.getInput("inactivity_deadline_hours"), 10);
+        const defaultUsersToNotify = core.getMultilineInput("default_users_to_notify");
         const octokit = github.getOctokit(githubToken);
         const { data: pullRequests } = await octokit.rest.pulls.list({
             ...github.context.repo,
@@ -9846,10 +9847,17 @@ async function createReminderComment() {
                 core.info("Deadline not reached, skipping.");
                 continue;
             }
-            const reviewers = pullRequest.requested_reviewers
-                ?.map((reviewer) => `@${reviewer.login}`)
-                .join(", ");
-            const reminderCommentMessage = `${reviewers} \n${reminderMessage}`;
+            const reviewers = pullRequest.requested_reviewers;
+            let reviewersMapping = "";
+            if (reviewers && reviewers.length > 0) {
+                core.info("The list of reviewers is not empty. Creating a list of users to be notified based on it.");
+                reviewersMapping = reviewers.map((reviewer) => `@${reviewer.login}`).join(", ");
+            }
+            else {
+                core.info("The list of reviewers is empty. Default users will be notified.");
+                reviewersMapping = defaultUsersToNotify.join(", ");
+            }
+            const reminderCommentMessage = `${reviewersMapping} \n${reminderMessage}`;
             core.info(`Message to write: ${reminderCommentMessage}`);
             const response = await octokit.rest.issues.createComment({
                 ...github.context.repo,
