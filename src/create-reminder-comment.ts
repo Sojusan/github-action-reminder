@@ -9,10 +9,8 @@ async function createReminderComment(): Promise<void> {
   try {
     const githubToken = core.getInput("github_token");
     const reminderMessage = core.getInput("reminder_message");
-    const inactivityDeadlineHours = parseInt(
-      core.getInput("inactivity_deadline_hours"),
-      10
-    );
+    const inactivityDeadlineHours = parseInt(core.getInput("inactivity_deadline_hours"), 10);
+    const defaultUsersToNotify = core.getMultilineInput("default_users_to_notify");
     const octokit = github.getOctokit(githubToken);
 
     const { data: pullRequests } = await octokit.rest.pulls.list({
@@ -34,18 +32,24 @@ async function createReminderComment(): Promise<void> {
       }
       const currentTime = new Date().getTime();
       const updated_at = new Date(pullRequest.updated_at).getTime();
-      const deadlineTime =
-        updated_at + convertHoursToMilliseconds(inactivityDeadlineHours);
+      const deadlineTime = updated_at + convertHoursToMilliseconds(inactivityDeadlineHours);
 
       if (currentTime < deadlineTime) {
         core.info("Deadline not reached, skipping.");
         continue;
       }
 
-      const reviewers = pullRequest.requested_reviewers
-        ?.map((reviewer) => `@${reviewer.login}`)
-        .join(", ");
-      const reminderCommentMessage = `${reviewers} \n${reminderMessage}`;
+      const reviewers = pullRequest.requested_reviewers;
+      let reviewersMapping = "";
+      if (reviewers && reviewers.length > 0) {
+        core.info("The list of reviewers is not empty. Creating a list of users to be notified based on it.");
+        reviewersMapping = reviewers.map((reviewer) => `@${reviewer.login}`).join(", ");
+      } else {
+        core.info("The list of reviewers is empty. Default users will be notified.");
+        reviewersMapping = defaultUsersToNotify.join(", ");
+      }
+
+      const reminderCommentMessage = `${reviewersMapping} \n${reminderMessage}`;
 
       core.info(`Message to write: ${reminderCommentMessage}`);
       const response = await octokit.rest.issues.createComment({
@@ -57,9 +61,7 @@ async function createReminderComment(): Promise<void> {
       if (response.status === STATUS_CREATED) {
         core.info(`Reminder created for PR: ${pullRequest.number}`);
       } else {
-        core.error(
-          `Failed to create comment for PR: ${pullRequest.number} Response status: ${response.status}`
-        );
+        core.error(`Failed to create comment for PR: ${pullRequest.number} Response status: ${response.status}`);
       }
     }
   } catch (error: any) {

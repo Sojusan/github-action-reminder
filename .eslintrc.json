@@ -21,6 +21,12 @@
       }
     },
     "rules": {
+      "max-len": [
+        "error",
+        {
+          "code": 120
+        }
+      ],
       "i18n-text/no-en": "off",
       "eslint-comments/no-use": "off",
       "import/no-namespace": "off",
@@ -29,7 +35,8 @@
       "prettier/prettier": [
         "error",
         {
-          "endOfLine": "auto"
+          "endOfLine": "auto",
+          "printWidth": 120
         }
       ],
       "no-use-before-define": "off",
