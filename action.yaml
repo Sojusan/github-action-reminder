@@ -7,12 +7,16 @@ inputs:
     description: "GitHub Token"
   reminder_message:
     required: false
-    default: "No activity in this PR. Please take some time and check it out. Don't make this PR sad ;-;"
+    default: "No activity in this PR. Please take some time and check it out."
     description: "Message to be sent to the PR that is missing in activity."
   inactivity_deadline_hours:
     required: false
     default: "48"  # by default the reminder will be sent after 2 days of inactivity
     description: "This is the deadline for inactive PR (in hours). If this time is exceeded then a reminder will be sent."
+  default_users_to_notify:
+    required: false
+    default: ""
+    description: "This is a list of users to be notified in case the list of reviewers is empty. The list of users is in multi-line string format."
 runs:
   using: "node16"
   main: "dist/index.js"

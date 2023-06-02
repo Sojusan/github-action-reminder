@@ -2,6 +2,10 @@
 
 > Date format is DD.MM.YYYY.
 
+[1.1.0] - 02.06.2023
+
+- Added `default_users_to_notify` option for specifying the default users to be notified if reviewers list is empty.
+
 [1.0.1] - 13.03.2023
 
 - Added log entry about no pull requests.
