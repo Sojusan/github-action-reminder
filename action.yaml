@@ -19,7 +19,7 @@ inputs:
     default: ""
     description: "This is a list of users to be notified in case the list of reviewers is empty. The list of users is in multi-line string format."
 runs:
-  using: "node22"
+  using: "node20"
   main: "dist/index.js"
 branding:
   icon: "bell"
