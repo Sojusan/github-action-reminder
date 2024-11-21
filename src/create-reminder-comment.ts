@@ -7,7 +7,7 @@ const STATUS_CREATED = 201;
 
 async function createReminderComment(): Promise<void> {
   try {
-    const githubToken = core.getInput("github_token");
+    const githubToken = core.getInput("github_token", { required: true });
     const reminderMessage = core.getInput("reminder_message");
     const inactivityDeadlineHours = parseInt(core.getInput("inactivity_deadline_hours"), 10);
     const defaultUsersToNotify = core.getMultilineInput("default_users_to_notify");
