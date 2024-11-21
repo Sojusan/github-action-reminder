@@ -6,7 +6,9 @@
 
 - Dependencies updated.
 - Added a default value for the `github_token` value, so setting it explicitly is no longer needed.
-- Updated `README.md` to include the information about the `if` sections which could be used to prevent running this action on the forks.
+- Updated `README.md`:
+  - to include the information about the `if` sections which could be used to prevent running this action on the forks,
+  - to include the information about setting the `write` permission for the job or github token.
 - Updated the version of the used node to `20`.
 
 [1.1.0] - 02.06.2023
